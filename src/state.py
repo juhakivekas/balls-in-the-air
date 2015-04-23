@@ -13,13 +13,10 @@ class State:
 
 	def is_valid_throw(self, t):
 		"""Checks wether the throw t can be thrown without particle collisions"""
-		if t>0 and self.land.count(t) != 0:
+		if t>=0 and self.land.count(t) != 0:
 			return False
 		if t<0 and self.land.count(t) == 0:
 			return False
-		if t==0:
-			#zero throws are always allowed?
-			return True
 		return True
 
 	def throw(self, t):
