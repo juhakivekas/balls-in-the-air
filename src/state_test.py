@@ -1,19 +1,24 @@
 from state import State
 
-#these tests are just me trying out the program intuitively, not real unit tests
+#check that valid cases work right
 
-s = State([0,1]);
-s.debug()
-s.throw(3)
-s.debug()
+#the siteswap [4,4,1] is valid
+s = State([0,1,2]);
+tmp = list(s.land)
+s.throw(4)
+s.throw(4)
 s.throw(1)
-s.debug()
+#for periodic siteswaps the final and initial state has to be the same
+if(tmp != s.land):
+	print "State: test failed, [4,4,1] is periodic but seems not to be."
 
-s = State([0]);
-s.debug()
-s.throw(2)
-s.debug()
-s.throw(2)
-s.debug()
+#[1,-1,0] is a valid siteswap
+s = State([])
+tmp = list(s.land)
+s.throw(1)
 s.throw(-1)
-s.debug()
+s.throw(0)
+if(tmp != s.land):
+	print "State: test failed, [1-1,0] is periodic but seems not to be."
+
+print "State: all test ran"

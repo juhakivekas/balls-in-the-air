@@ -3,13 +3,14 @@
 # 21.4.2015
 
 class State:
-	"""A class that keeps track of the juggling pattern state. Specifically virtual siteswaps."""
+	"""A class that keeps track of the juggling pattern state. Specifically virtual siteswap states."""
 
 	def __init__(self, start=[]):
 		"""Initialize a virtual siteswap state from a list"""
+		#XXX is timeslot a good word for a "cross" in the state?
 		#positive integers and zero indicate occupied landing times/slots for particles
 		#negative integers indicate unoccupied landing times/slots in the past
-		self.land = start;
+		self.land = list(start)
 
 	def is_valid_throw(self, t):
 		"""Checks wether the throw t can be thrown without particle collisions"""
@@ -25,20 +26,20 @@ class State:
 			if self.land.count(t) != 0:
 				#if there's a ball landing on time 't' already,
 				#then we will have a collision of particles.
-				print "Throwing ball to existing time slot!"
+				raise ValueError('Throwing ball to occupied time slot!')
 			#throw a ball
-			self.land.append(t);
+			self.land.append(t)
 
 		elif t<0:
 			if self.land.count(t) == 0:
 				#if a ball has landed on time 't',
 				#then we will have a collision of antiparticles in the past.
-				print "Throwing ball to existing time slot!"
+				raise ValueError('Throwing ball to occupied time slot!')
 			#throw a ball
 			self.land.remove(t)
 
 		#keep the list sorted for clarity
-		self.land.sort();
+		self.land.sort()
 
 		if self.land.count(0) != 0:
 			#if there was a ball to throw NOW, remove it.
