@@ -61,8 +61,7 @@ class Simulation:
 			for t in throws:
 				self.parts.append(Particle(t*BEATLENGTH, QuadGPath(BOT1, BOT2, 0.04, t*BEATLENGTH)))
 		# Particle removal
-		while(len(self.parts) > 0 and self.parts[0].t == self.parts[0].maxt):
-			self.parts = self.parts[1:]
+		self.parts = [p for p in self.parts if p.t <= p.maxt]
 		# NOTE: If needed, this part may be modified so that particles persist, i.e. particles don't get removed + added but are given a new trajectory instead.
 		
 		# Update the particles we have left
