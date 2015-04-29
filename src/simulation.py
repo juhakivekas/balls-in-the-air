@@ -18,13 +18,14 @@ import pygame.time
 import pygame.display
 
 from path import *
+from pattern import *
 
 class DummyPattern:
 	"""I'm a dumb pattern class that says you should always throw 3's."""
 	def __init__(self):
 		pass
-	def throws(self):
-		return (3, )
+	def next_throw(self):
+		return 3
 
 class Simulation:
 	"""A simulation object, encapsulating the entirety of the graphical part of the program as well as following the instructions of a pattern object."""
@@ -32,7 +33,10 @@ class Simulation:
 		self.fpsClock = pygame.time.Clock()
 		self.t = 0
 
-		self.pattern = DummyPattern()
+		if (pattern == None):
+			self.pattern = DummyPattern()
+		else:
+			self.pattern = pattern
 		self.parts = []
 
 		pygame.display.init()
@@ -57,13 +61,13 @@ class Simulation:
 
 		# Particle creation
 		if (self.t % BEATLENGTH == 0):
-			throws = self.pattern.throws()
-			for t in throws:
-				self.parts.append(Particle(t*BEATLENGTH, QuadGPath(BOT1, BOT2, 0.04, t*BEATLENGTH)))
-		# Particle removal
-		self.parts = [p for p in self.parts if p.t <= p.maxt]
-		# NOTE: If needed, this part may be modified so that particles persist, i.e. particles don't get removed + added but are given a new trajectory instead.
-		
+			next = self.pattern.next_throw()
+			if (next > 0):
+				self.parts.append(Particle(next*BEATLENGTH, QuadGPath(BOT1, BOT2, 0.04, next*BEATLENGTH)))
+			# Particle removal
+			self.parts = [p for p in self.parts if p.t < p.maxt]
+			# NOTE: If needed, this part may be modified so that particles persist, i.e. particles don't get removed + added but are given a new trajectory instead.
+			
 		# Update the particles we have left
 		for p in self.parts:
 			p.update()
@@ -97,6 +101,3 @@ class Particle:
 	def draw(self, surf):
 		"""Draw some graphical representation of the particle in its current position, on the specified surface."""
 		pygame.draw.circle(surf, (255,255,255), map(int, self.path.at(float(self.t)/self.maxt)), 10)
-
-sim = Simulation()
-sim.run()
