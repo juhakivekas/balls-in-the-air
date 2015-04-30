@@ -12,6 +12,10 @@ class State:
 		#negative integers indicate unoccupied landing times/slots in the past
 		self.land = list(start)
 
+	def __str__(self):
+		"""print the state as a string"""
+		return self.land.__str__()
+
 	def is_valid_throw(self, t):
 		"""Checks wether the throw t can be thrown without particle collisions"""
 		if t>=0 and self.land.count(t) != 0:
@@ -50,7 +54,3 @@ class State:
 
 		#progress in time by subtracting one from each state element
 		self.land[:] = [a-1 for a in self.land]
-
-	def debug(self):
-		"""print the state as a string"""
-		print self.land
