@@ -9,7 +9,7 @@ Goal is to have the minimal specification met until the next meeting on Thu 7.5.
 
 * Random patterns
     - *Juha*
-	- Random_pattern object
+    - Random pattern object
 
 * An actual program meant for execution
 	- Main.py
@@ -33,5 +33,7 @@ The future
 * Configuration files for graphics settings
 
 * Random walk parmeter input
-	-Something mathematically interesting we'll go through on Tue 5.5. lecture
+	- Something mathematically interesting we'll go through on Tue 5.5. lecture
 
+* Adding more (non-anti) particles to a pattern
+	- State.addparticle() might be a good way?

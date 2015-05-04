@@ -3,7 +3,7 @@
 # 27.4.2015
 
 class Pattern:
-	"""This is a class for handling periodic siteswaps. Specifically virtual siteswaps"""
+	"""This is a class for handling periodic siteswaps. (virtual, periodic)"""
 
 	def __init__(self, throws=[]):
 		"""initialize an object given the siteswap as a list"""
