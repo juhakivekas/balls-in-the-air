@@ -4,6 +4,7 @@
 
 #for making copies of objects in order to minimize side-effects
 import copy
+import random
 from state import State
 
 class RandomPattern:
@@ -26,6 +27,18 @@ class RandomPattern:
 		return len(slots)
 
 	def next_throw(self):
-		#TODO check for valid throws, and choose one at random
-		#it's funny how the most important feature in not yet implemented :D
-		return 0
+		#the list of allowed throws
+		allowed = []
+		
+		#check all the wanted throws vor validity
+		for i in range(0,6):
+			if self.state.is_valid_throw(i):
+				allowed.append(i)
+
+		#pick an integer that is an index for the valid throws list
+		index = random.randint(0,len(allowed)-1)
+		#select the throw
+		next_throw = allowed[index]
+		#manage the state accoring to the new throw
+		self.state.throw(next_throw);
+		return next_throw;

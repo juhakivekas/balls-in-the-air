@@ -8,3 +8,13 @@ from state import State
 r = RandomPattern(State([0,1,2]))
 if r.particle_count() != 3:
 	print "test fail"
+print r.state
+print r.next_throw();
+print r.state
+print r.next_throw();
+print r.state
+print r.next_throw();
+print r.state
+print r.next_throw();
+print r.state
+print r.next_throw();

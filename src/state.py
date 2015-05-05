@@ -12,9 +12,32 @@ class State:
 		#negative integers indicate unoccupied sloting times/slots in the past
 		self.slot = list(start)
 
+#	def __str__(self):
+#		"""print the state as a string"""
+#		return self.slot.__str__()
+	
 	def __str__(self):
 		"""print the state as a string"""
-		return self.slot.__str__()
+		string = ""
+		#add the negative slots as -'s 
+#		for i in range(-5,0):
+#			if self.slot.count(i) != 0:
+#				string += "-"
+#			else:
+#				string += "X"
+		
+		#add the zero-time marker
+#		string += "|"
+
+		#add the positivve slots as X's
+		for i in range(0,6):
+			if self.slot.count(i) != 0:
+				string += "X"
+			else:
+				string += "-"
+		
+		return string
+			
 
 	def is_valid_throw(self, t):
 		"""Checks wether the throw t can be thrown without particle collisions"""
