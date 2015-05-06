@@ -30,7 +30,7 @@ class Buffer:
 			self.ballBuffer.append(0)
 			self.antiBuffer.append(throw)
 
-	def get_next_throw(self):
+	def next_throw(self):
 		throw = (self.ballBuffer[0], self.antiBuffer[0])
 		del self.ballBuffer[0]
 		del self.antiBuffer[0]
