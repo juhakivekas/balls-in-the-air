@@ -10,7 +10,7 @@ from state import *
 #if only height given, it will throw random with normal balls
 #pattern given in format: 3/-2/1
 #if pattern is given with random flag, it will use the pattern as starting state
-#TODO init simulation
+#TODO init simulation/GUI/such
 
 def main(argv):
 	number_of_arguments = len(sys.argv)
