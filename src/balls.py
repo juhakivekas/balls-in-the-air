@@ -91,7 +91,7 @@ def main(argv):
 					print "Invalid state given. Has minuses in it"
 			else:
 				print "Error in giving arguments."
-				print "You have given invalid flags."
+				print "You have given invalid second flag."
 		elif(flags[0] == 'p'):
 			if(flags[0] == 'a'):
 				pat = Pattern(pattern)
@@ -101,7 +101,10 @@ def main(argv):
 				buf = Buffer(h, "pn", pat)
 			else:
 				print "Error in giving arguments."
-				print "You have given invalid flags."
+				print "You have given invalid second flag."
+		else:
+			print "Error in giving arguments."
+			print "You have given invalid first flag."
 	else:
 		print "Error in giving arguments."
 		print "You have given too many arguments."
