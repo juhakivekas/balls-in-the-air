@@ -5,7 +5,7 @@
 #for making copies of objects in order to minimize side-effects
 import copy
 import random
-from state import State
+from state import *
 
 class RandomPattern:
 	"An object for handling random siteswaps. (virtual, non-periodic)"

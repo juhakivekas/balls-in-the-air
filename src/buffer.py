@@ -9,13 +9,13 @@ class Buffer:
 		self.ballBuffer = []
 		self.antiBuffer = []
 		self.h = h
-		self.random = false
-		self.anti = false
+		self.random = False
+		self.anti = False
 		self.throw_generator = p
 		if(flags[0] == 'r'):
-			self.random = true
+			self.random = True
 		if(flags[1] == 'a'):
-			self.anti = true
+			self.anti = True
 		i = 0
 		while(i < h):
 			self.fetch_throw()
