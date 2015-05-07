@@ -37,7 +37,6 @@ class RandomPattern:
 
 		#pick an integer that is an index for the valid throws list
 		index = random.randint(0,len(allowed)-1)
-		#select the throw
 		next_throw = allowed[index]
 		#manage the state accoring to the new throw
 		self.state.throw(next_throw);

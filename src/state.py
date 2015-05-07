@@ -12,6 +12,9 @@ class State:
 		#negative integers indicate unoccupied sloting times/slots in the past
 		self.slot = list(start)
 
+		#hardcoded to only output non-virtual throws
+		self.virtual = False
+
 #	def __str__(self):
 #		"""print the state as a string"""
 #		return self.slot.__str__()
@@ -41,8 +44,19 @@ class State:
 
 	def is_valid_throw(self, t):
 		"""Checks wether the throw t can be thrown without particle collisions"""
+		#if we don't allow virtual throws, only zeros can be thrown when
+		#the state doesn't contain a particle in the zero slot
+		if not self.virtual and self.slot.count(0) == 0:
+			if t==0:
+				return True
+			else:
+				return False
+
+		#we can throw to any unoccupied slot.
+		#positive slots are unoccupied if they ARE NOT in the 'slot' list
 		if t>=0 and self.slot.count(t) != 0:
 			return False
+		#negative slots are unoccupied if they ARE in the 'slot' list
 		if t<0 and self.slot.count(t) == 0:
 			return False
 		return True

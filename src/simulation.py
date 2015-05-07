@@ -5,11 +5,11 @@
 # Temporary constants. May (should) be changed later to accomodate for command line inputs.
 FPS = 60
 BEATLENGTH = 40
-RESOLUTION = (320, 240)
-BOTTOM = (160, 180)
-BOT1 = (140, 180)
-BOT2 = (180, 180)
-TOP = (160, 60)
+RESOLUTION = (640, 480)
+BOTTOM = (320, 360)
+BOT1 = (280, 360)
+BOT2 = (360, 360)
+TOP = (320, 60)
 
 
 import pygame.draw
@@ -62,8 +62,10 @@ class Simulation:
 		# Particle creation
 		if (self.t % BEATLENGTH == 0):
 			next = self.pattern.next_throw()
+			print next
+			print self.pattern.state
 			if (next > 0):
-				self.parts.append(Particle(next*BEATLENGTH, QuadGPath(BOT1, BOT2, 0.04, next*BEATLENGTH)))
+				self.parts.append(Particle(next*BEATLENGTH, QuadGPath(BOT1, BOT2, 0.03, next*BEATLENGTH)))
 			# Particle removal
 			self.parts = [p for p in self.parts if p.t < p.maxt]
 			# NOTE: If needed, this part may be modified so that particles persist, i.e. particles don't get removed + added but are given a new trajectory instead.
