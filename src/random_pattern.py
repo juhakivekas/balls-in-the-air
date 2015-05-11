@@ -16,11 +16,11 @@ class RandomPattern:
 		maximum throw height
 		boolean for allowing virtual throws
 		string for type of distribution:
-			"u" for uniform
+			"u" for uniform (default for compability)
 			"g" for geometric
 	"""
 
-	def __init__(self, numballs, min_h, max_h, dist_type):
+	def __init__(self, numballs, min_h, max_h, dist_type="u"):
 		#allow virtual throws for states if min_height is negative
 		virtual = (min_h <0)
 		#the ground state of an n ball pattern is [0,1,...,n-1]
@@ -46,7 +46,7 @@ class RandomPattern:
 		return len(slots)
 
 	def unif_next_throw(self):
-		"""returns a random (allowed) throw and manages the state accordingly"""
+		"""returns a random (allowed) throw from uniform distribution and manages the state accordingly"""
 		#we can't let the lowest valued slot move too far to the past.
 		#If we get a free slot in (min_height-1) we can never fill the slot
 		#since it will move further away when timwe progresses.
@@ -70,15 +70,57 @@ class RandomPattern:
 		#XXX this is where the distribution can be made non-uniform!
 		print allowed
 		index = random.randint(0,len(allowed)-1)
-
+		
 		next_throw = allowed[index]
 		#manage the state accoring to the new throw
 		self.state.throw(next_throw);
 		return next_throw;
 
 	def geom_next_throw(self):
-	#now implementing
+	"""returns a random (allowed) throw from geometric distribution and manages the state accordingly"""
+		#we can't let the lowest valued slot move too far to the past.
+		#If we get a free slot in (min_height-1) we can never fill the slot
+		#since it will move further away when timwe progresses.
+		if self.state.is_valid_throw(self.min_height):
+			next_throw =  self.min_height
+			self.state.throw(next_throw);
+			return next_throw;
+
+		#the list of allowed throws
+		allowed = []
+		#check throws in the chosen range for validity
+		for i in range(self.min_height, self.max_height+1):
+			if self.state.is_valid_throw(i):
+				allowed.append(i)
+
+		if not allowed:
+			#if the allowed list is empty, there is a problem.
+			raise ValueError('The random pattern state got jammed!')
+		print allowed
+		#dist will be created as normal geometric distribution
+		dist = range(1, len(allowed) + 1)
+		dist = map(lambda x: 0.5**x, dist)
+		#sum of dist is then scaled to be 1 as for any probability vector
+		dist = map(lambda x: x/sum(dist), dist)
+		print allowed
+		#rand is within 0 to 1
+		rand = random.random()
+		index = 0
+		#from rand we look for the corresponding index
+		#if is because floating points do not sum to exactly 1.000...
+		while(rand > 0.0):
+			rand -= dist[index]
+			index += 1
+			if(index == len(allowed)):
+				rand = 0.0
+		index -= 1
+		next_throw = allowed[index]
+		#manage the state accoring to the new throw
+		self.state.throw(next_throw);
+		return next_throw;
 
 	def next_throw(self):
 		if(self.distribution_type == "u"):
 			return self.unif_next_throw()
+		else:
+			return self.geom_next_throw()
