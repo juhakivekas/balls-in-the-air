@@ -14,9 +14,8 @@ sim.run()
 #----goal for week2
 #"""
 #start from the three ball ground state
-s = State([0,1,2])
 #create a random pattern starting from the state 's'
-r = RandomPattern(s)
+r = RandomPattern(3,-2,6)
 sim = Simulation(r);
 sim.run()
 #"""

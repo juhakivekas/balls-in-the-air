@@ -5,15 +5,15 @@
 class State:
 	"""A class that keeps track of the juggling pattern state. Specifically virtual siteswap states."""
 
-	def __init__(self, start=[]):
+	def __init__(self, start=[], virtual=False):
 		"""Initialize a virtual siteswap state from a list"""
 		#XXX is timeslot a good word for a "cross" in the state?
 		#positive integers and zero indicate occupied sloting times/slots for particles
 		#negative integers indicate unoccupied sloting times/slots in the past
 		self.slot = list(start)
 
-		#hardcoded to only output non-virtual throws
-		self.virtual = False
+		#this is a boolean allowing virtual throws
+		self.virtual = virtual
 
 #	def __str__(self):
 #		"""print the state as a string"""
@@ -23,14 +23,14 @@ class State:
 		"""print the state as a string"""
 		string = ""
 		#add the negative slots as -'s 
-#		for i in range(-5,0):
-#			if self.slot.count(i) != 0:
-#				string += "-"
-#			else:
-#				string += "X"
+		for i in range(-5,0):
+			if self.slot.count(i) != 0:
+				string += "-"
+			else:
+				string += "X"
 		
 		#add the zero-time marker
-#		string += "|"
+		string += "|"
 
 		#add the positivve slots as X's
 		for i in range(0,6):
