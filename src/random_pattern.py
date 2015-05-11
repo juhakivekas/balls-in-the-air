@@ -107,12 +107,10 @@ class RandomPattern:
 		rand = random.random()
 		index = 0
 		#from rand we look for the corresponding index
-		#if is because floating points do not sum to exactly 1.000...
-		while(rand > 0.0):
+		#and condition is because machine epsilon
+		while(rand > 0.0 and index < len(allowed)):
 			rand -= dist[index]
 			index += 1
-			if(index == len(allowed)):
-				rand = 0.0
 		index -= 1
 		next_throw = allowed[index]
 		#manage the state accoring to the new throw
