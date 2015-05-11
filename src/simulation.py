@@ -6,6 +6,7 @@
 FPS = 60
 BEATLENGTH = 40
 RESOLUTION = (640, 480)
+GRAVITY = 0.03
 BOTTOM = (320, 360)
 BOT1 = (280, 360)
 BOT2 = (360, 360)
@@ -59,16 +60,25 @@ class Simulation:
 		# pump() should be called once a frame to empty the event queue
 		pygame.event.pump()
 
-		# Particle creation
+		# Things that occur once every beat
 		if (self.t % BEATLENGTH == 0):
 			next = self.pattern.next_throw()
 			print next
 			print self.pattern.state
-			if (next > 0):
-				self.parts.append(Particle(next*BEATLENGTH, QuadGPath(BOT1, BOT2, 0.03, next*BEATLENGTH)))
-			# Particle removal
+			
+			# Split particles into the ones in the air and the ones just caught
+			hand = [p for p in self.parts if p.t >= p.maxt]
 			self.parts = [p for p in self.parts if p.t < p.maxt]
-			# NOTE: If needed, this part may be modified so that particles persist, i.e. particles don't get removed + added but are given a new trajectory instead.
+			
+			if (next > 0):
+				# If we have nothing in hand, create a new particle. This is necessary in the beginning, but should no longer occur once the pattern has been established
+				if (len(hand) == 0):
+					self.parts.append(Particle(next*BEATLENGTH, QuadGPath(BOT1, BOT2, GRAVITY, next*BEATLENGTH)))
+				# Otherwise throw an existing particle. A new path is created to accommodate for hand alternation.
+				else:
+					part = hand.pop()
+					path = QuadGPath(part.path.at(1), part.path.at(0), GRAVITY, next*BEATLENGTH)
+					self.parts.append(Particle(next*BEATLENGTH, path))
 			
 		# Update the particles we have left
 		for p in self.parts:

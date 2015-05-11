@@ -22,7 +22,7 @@ class Buffer:
 			i += 1
 
 	def fetch_throw(self):
-		throw = throw_generator.next_throw()
+		throw = self.throw_generator.next_throw()
 		if(throw >= 0):
 			self.ballBuffer.append(throw)
 			self.antiBuffer.append(0)
