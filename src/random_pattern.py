@@ -15,15 +15,19 @@ class RandomPattern:
 		minimum throw height
 		maximum throw height
 		boolean for allowing virtual throws
+		string for type of distribution:
+			"u" for uniform
+			"g" for geometric
 	"""
 
-	def __init__(self, numballs, min_h, max_h):
+	def __init__(self, numballs, min_h, max_h, dist_type):
 		#allow virtual throws for states if min_height is negative
 		virtual = (min_h <0)
 		#the ground state of an n ball pattern is [0,1,...,n-1]
 		self.state = State(range(0, numballs), virtual)
 		self.min_height = min_h
 		self.max_height = max_h
+		self.distribution_type = dist_type
 		print min_h
 		print max_h
 		if(max_h-min_h < numballs):
@@ -41,7 +45,7 @@ class RandomPattern:
 			slots = slots[1:-1]
 		return len(slots)
 
-	def next_throw(self):
+	def unif_next_throw(self):
 		"""returns a random (allowed) throw and manages the state accordingly"""
 		#we can't let the lowest valued slot move too far to the past.
 		#If we get a free slot in (min_height-1) we can never fill the slot
@@ -71,3 +75,10 @@ class RandomPattern:
 		#manage the state accoring to the new throw
 		self.state.throw(next_throw);
 		return next_throw;
+
+	def geom_next_throw(self):
+	#now implementing
+
+	def next_throw(self):
+		if(self.distribution_type == "u"):
+			return self.unif_next_throw()
