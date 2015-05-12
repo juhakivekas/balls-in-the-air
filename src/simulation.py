@@ -21,6 +21,9 @@ import pygame.display
 from path import *
 from buffer import *
 
+def signal_handler(signal, frame):
+    sys.exit(0)
+
 class DummyBuffer:
 	"""I'm a dumb buffer class that says you should always throw 3's."""
 	def __init__(self):
@@ -42,13 +45,13 @@ class Simulation:
 
 		pygame.display.init()
 		self.disp = pygame.display.set_mode(RESOLUTION)
-	
+
 	def run(self):
 		"""Run the simulation until 'update' tells us to stop. Currently, the only halting condition is the user pressing ESC."""
 		run = True
 		while(run):
-			run = self.update()
-		
+		    run = self.update()
+
 	def update(self):
 		"""Advance the simulation for a single frame. Compute the particles' new locations and draw them."""
 		# The user can press ESC at any time to stop the simulation
@@ -56,7 +59,7 @@ class Simulation:
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_ESCAPE:
 					return False
-		
+
 		# pump() should be called once a frame to empty the event queue
 		pygame.event.pump()
 
@@ -65,11 +68,11 @@ class Simulation:
 			next = self.buffer.next_throw()
 			# The following line no longer works. Have to figure out something.
 			# print self.buffer.throw_generator.state
-			
+
 			# Split particles into the ones in the air and the ones just caught
 			hand = [p for p in self.parts if p.t >= p.maxt]
 			self.parts = [p for p in self.parts if p.t < p.maxt]
-			
+
 			for n in next:
 				if (n > 0):
 					# If we have nothing in hand, create a new particle. This is necessary in the beginning, but should no longer occur once the buffer has been established
@@ -80,16 +83,16 @@ class Simulation:
 						part = hand.pop()
 						path = QuadGPath(part.path.at(1), part.path.at(0), GRAVITY, n*BEATLENGTH)
 						self.parts.append(Particle(n*BEATLENGTH, path))
-			
+
 		# Update the particles we have left
 		for p in self.parts:
 			p.update()
-		
+
 		self.draw()
 		self.t = (self.t + 1) % BEATLENGTH
 		self.fpsClock.tick(FPS)
 		return True
-		
+
 	def draw(self):
 		"""Draw everything to self.disp, i.e. the surface returned by setting up the display module."""
 		self.disp.fill((0, 0, 0))
@@ -103,14 +106,14 @@ class Particle:
 		# These two variables determine the particle's position on a parametrized path.
 		self.t = 0
 		self.maxt = lifetime
-		
+
 		self.path = path
 		self.charge = charge
-		
+
 	def update(self):
 		"""Advance a single frame."""
 		self.t += 1
-		
+
 	def draw(self, surf):
 		"""Draw some graphical representation of the particle in its current position, on the specified surface."""
 		pygame.draw.circle(surf, (255,255,255), map(int, self.path.at(float(self.t)/self.maxt)), 10)
