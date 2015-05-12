@@ -4,38 +4,52 @@ class Buffer:
 	"""This class buffers the throws."""
 	#h: max height
 	#flags: ["r" if random or else "p" if pattern] and ["n" if only normal balls or else "a" if antiballs too]
-	#p: Pattern or RandomPattern
-	def __init__(self, h, flags, p):
-		self.ballBuffer = []
-		self.antiBuffer = []
-		self.h = h
-		self.random = False
-		self.anti = False
-		self.throw_generator = p
-		if(flags[0] == 'r'):
-			self.random = True
-		if(flags[1] == 'a'):
-			self.anti = True
-		i = 0
-		while(i < h):
-			self.fetch_throw()
-			i += 1
+	#generator: Pattern or RandomPattern
+	def __init__(self, generator):
+		self.throw_generator = generator
+		self.throws = []
+		
+		#self.random = False
+		#self.anti = False
+		# if(flags[0] == 'r'):
+			# self.random = True
+		# if(flags[1] == 'a'):
+			# self.anti = True
 
-	def fetch_throw(self):
-		throw = self.throw_generator.next_throw()
-		if(throw >= 0):
-			self.ballBuffer.append(throw)
-			self.antiBuffer.append(0)
-		else:
-			self.ballBuffer.append(0)
-			self.antiBuffer.append(throw)
+		if (isinstance(generator, Pattern)):
+			for i in xrange(0, -min(generator.siteswap)+1):
+				self.throws.append([])
+		if (isinstance(generator, RandomPattern)):
+			for i in xrange(0, -(generator.min_height)+1):
+				self.throws.append([])
+		
+		for i in xrange(0, len(self.throws)):
+			throw = self.throw_generator.next_throw()
+			if (throw > 0):
+				self.throws[i].append(throw)
+			if (throw < 0):
+				self.throws[i + throw].append(throw)
+			
+
+
+	# def fetch_throw(self):
+		# throw = self.throw_generator.next_throw()
+		# self.throws.append([])
+		# if(throw > 0):
+			# self.throws[-1].append
+		# if(throw < 0):
+			# print -1+throw
+			# self.throws[-1+throw].append
 
 	def next_throw(self):
-		throw = (self.ballBuffer[0], self.antiBuffer[0])
-		del self.ballBuffer[0]
-		del self.antiBuffer[0]
-		self.fetch_throw()
+		throw = self.throws.pop(0)
+		self.throws.append([])
+		next = self.throw_generator.next_throw()
+		if (next > 0):
+			self.throws[-1].append(next)
+		if (next < 0):
+			self.throws[-1 + next].append(next)
 		return throw
-
+		
 	def nth_throw(self, n):
 		return (self.ballBuffer[n], self.antiBuffer[n])

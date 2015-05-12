@@ -15,7 +15,7 @@ class Pattern:
 		self.time = 0
 
 	def is_valid(self):
-		"""checks wether the siteswap is a valid one"""
+		"""checks whether the siteswap is a valid one"""
 		siteswap_copy = list(self.siteswap)
 		length = len(siteswap_copy)
 		

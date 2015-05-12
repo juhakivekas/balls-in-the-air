@@ -77,7 +77,7 @@ class RandomPattern:
 		return next_throw;
 
 	def geom_next_throw(self):
-	"""returns a random (allowed) throw from geometric distribution and manages the state accordingly"""
+		"""returns a random (allowed) throw from geometric distribution and manages the state accordingly"""
 		#we can't let the lowest valued slot move too far to the past.
 		#If we get a free slot in (min_height-1) we can never fill the slot
 		#since it will move further away when timwe progresses.

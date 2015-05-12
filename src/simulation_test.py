@@ -4,5 +4,5 @@
 
 from simulation import *
 
-sim = Simulation(Pattern([5, 5, 5, 0, 0]))
+sim = Simulation(Buffer(Pattern([1, -1])))
 sim.run()

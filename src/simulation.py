@@ -19,25 +19,25 @@ import pygame.time
 import pygame.display
 
 from path import *
-from pattern import *
+from buffer import *
 
-class DummyPattern:
-	"""I'm a dumb pattern class that says you should always throw 3's."""
+class DummyBuffer:
+	"""I'm a dumb buffer class that says you should always throw 3's."""
 	def __init__(self):
 		pass
 	def next_throw(self):
-		return 3
+		return (3)
 
 class Simulation:
-	"""A simulation object, encapsulating the entirety of the graphical part of the program as well as following the instructions of a pattern object."""
-	def __init__(self, pattern=None):
+	"""A simulation object, encapsulating the entirety of the graphical part of the program as well as following the instructions of a buffer object."""
+	def __init__(self, buffer=None):
 		self.fpsClock = pygame.time.Clock()
 		self.t = 0
 
-		if (pattern == None):
-			self.pattern = DummyPattern()
+		if (buffer == None):
+			self.buffer = DummyBuffer()
 		else:
-			self.pattern = pattern
+			self.buffer = buffer
 		self.parts = []
 
 		pygame.display.init()
@@ -62,23 +62,24 @@ class Simulation:
 
 		# Things that occur once every beat
 		if (self.t % BEATLENGTH == 0):
-			next = self.pattern.next_throw()
-			print next
-			print self.pattern.state
+			next = self.buffer.next_throw()
+			# The following line no longer works. Have to figure out something.
+			# print self.buffer.throw_generator.state
 			
 			# Split particles into the ones in the air and the ones just caught
 			hand = [p for p in self.parts if p.t >= p.maxt]
 			self.parts = [p for p in self.parts if p.t < p.maxt]
 			
-			if (next > 0):
-				# If we have nothing in hand, create a new particle. This is necessary in the beginning, but should no longer occur once the pattern has been established
-				if (len(hand) == 0):
-					self.parts.append(Particle(next*BEATLENGTH, QuadGPath(BOT1, BOT2, GRAVITY, next*BEATLENGTH)))
-				# Otherwise throw an existing particle. A new path is created to accommodate for hand alternation.
-				else:
-					part = hand.pop()
-					path = QuadGPath(part.path.at(1), part.path.at(0), GRAVITY, next*BEATLENGTH)
-					self.parts.append(Particle(next*BEATLENGTH, path))
+			for n in next:
+				if (n > 0):
+					# If we have nothing in hand, create a new particle. This is necessary in the beginning, but should no longer occur once the buffer has been established
+					if (len(hand) == 0):
+						self.parts.append(Particle(n*BEATLENGTH, QuadGPath(BOT1, BOT2, GRAVITY, n*BEATLENGTH)))
+					# Otherwise throw an existing particle. A new path is created to accommodate for hand alternation.
+					else:
+						part = hand.pop()
+						path = QuadGPath(part.path.at(1), part.path.at(0), GRAVITY, n*BEATLENGTH)
+						self.parts.append(Particle(n*BEATLENGTH, path))
 			
 		# Update the particles we have left
 		for p in self.parts:
@@ -99,7 +100,7 @@ class Simulation:
 class Particle:
 	"""A particle that is thrown and follows a trajectory (a path). The current and total lifetimes are needed to find its current position on the path, and at the end it is removed. "Charge" represents whether it is an (anti)particle, though it's entirely possible this variable isn't needed."""
 	def __init__(self, lifetime, path, charge=1):
-		# These two variables that determine the particle's position on a parametrized path.
+		# These two variables determine the particle's position on a parametrized path.
 		self.t = 0
 		self.maxt = lifetime
 		
