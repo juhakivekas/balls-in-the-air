@@ -17,11 +17,13 @@ import pygame.draw
 import pygame.event
 import pygame.time
 import pygame.display
+import sys
+import signal
 
 from path import *
 from buffer import *
 
-def signal_handler(signal, frame):
+def exit_handler(signal, frame):
     sys.exit(0)
 
 class DummyBuffer:
@@ -45,6 +47,7 @@ class Simulation:
 
 		pygame.display.init()
 		self.disp = pygame.display.set_mode(RESOLUTION)
+        signal.signal(signal.SIGINT, exit_handler)
 
 	def run(self):
 		"""Run the simulation until 'update' tells us to stop. Currently, the only halting condition is the user pressing ESC."""

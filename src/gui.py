@@ -25,6 +25,7 @@ class Form(QMainWindow):
     def restart_simulation(self):
         if self.t.is_alive():
             os.kill(self.t.pid, signal.SIGINT)
+        #the simulation should be restarted here
         #self.start_simulation()
 
     def initialize(self):
