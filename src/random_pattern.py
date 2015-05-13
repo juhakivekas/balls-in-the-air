@@ -15,7 +15,7 @@ class RandomPattern:
 		minimum throw height
 		maximum throw height
 		boolean for allowing virtual throws
-		string for type of distribution:
+		string for type of distribution (takes the first letter, so "unif", "uniform"... are valid inputs):
 			"u" for uniform (default for compability)
 			"g" for geometric
 	"""
@@ -27,7 +27,8 @@ class RandomPattern:
 		self.state = State(range(0, numballs), virtual)
 		self.min_height = min_h
 		self.max_height = max_h
-		self.distribution_type = dist_type
+		#taking just the first letter allows different input values
+		self.distribution_type = dist_type[0]
 		print min_h
 		print max_h
 		if(max_h-min_h < numballs):
@@ -74,6 +75,7 @@ class RandomPattern:
 		next_throw = allowed[index]
 		#manage the state accoring to the new throw
 		self.state.throw(next_throw);
+		#returns throw
 		return next_throw;
 
 	def geom_next_throw(self):
@@ -115,9 +117,12 @@ class RandomPattern:
 		next_throw = allowed[index]
 		#manage the state accoring to the new throw
 		self.state.throw(next_throw);
+		#returns throw
 		return next_throw;
 
 	def next_throw(self):
+		#fetches the next throw by type of random process
+		#returns throw
 		if(self.distribution_type == "u"):
 			return self.unif_next_throw()
 		else:
