@@ -104,7 +104,6 @@ class RandomPattern:
 		dist = map(lambda x: 0.5**x, dist)
 		#sum of dist is then scaled to be 1 as for any probability vector
 		dist = map(lambda x: x/sum(dist), dist)
-		print allowed
 		#rand is within 0 to 1
 		rand = random.random()
 		index = 0
