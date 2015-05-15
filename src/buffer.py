@@ -6,33 +6,37 @@ class Buffer:
 	def __init__(self, generator):
 		self.throw_generator = generator
 		self.throws = []
-		#creates the empty buffer from Rattern or RandomPattern
+		self.height = 1
+		
+		# Determines the required buffer size depending on whether Pattern or RandomPattern is used
 		if (isinstance(generator, Pattern)):
-			for i in xrange(0, -min(generator.siteswap)+1):
+			for i in xrange(0, max(0, -min(generator.siteswap))+1):
 				self.throws.append([])
+				self.height = max(max(generator.siteswap), -min(generator.siteswap))
 		if (isinstance(generator, RandomPattern)):
-			for i in xrange(0, -(generator.min_height)+1):
+			for i in xrange(0, max(0, -(generator.min_height))+1):
 				self.throws.append([])
-		#fills the buffer with throws
+				self.height = max(generator.max_height, -(generator.min_height))
+				
+		# Initialize the buffer with the first throws
 		for i in xrange(0, len(self.throws)):
 			throw = self.throw_generator.next_throw()
-			#determines if the throw is normal (>0) or virtual(<0)
 			if (throw > 0):
 				self.throws[i].append(throw)
 			if (throw < 0):
 				self.throws[i + throw].append(throw)
 
 	def next_throw(self):
-		#returns the first throw from the buffer
-		#puts new throw into the "queue"
+		# Take the first throw in the buffer, later return it
 		throw = self.throws.pop(0)
+		
+		# Repopulate the queue according to the throw generator
 		self.throws.append([])
 		next = self.throw_generator.next_throw()
-		#determines if the throw is normal (>0) or virtual(<0)
 		if (next > 0):
 			self.throws[-1].append(next)
 		if (next < 0):
-			self.throws[-1 + next].append(next)
+			self.throws[next-1].append(next)
 		return throw
 		
 	def nth_throw(self, n):

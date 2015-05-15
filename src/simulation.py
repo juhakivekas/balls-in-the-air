@@ -3,14 +3,7 @@
 # 22.4.2015
 
 # Temporary constants. May (should) be changed later to accomodate for command line inputs.
-FPS = 60
-BEATLENGTH = 40
-RESOLUTION = (640, 480)
-GRAVITY = 0.03
-BOTTOM = (320, 360)
-BOT1 = (280, 360)
-BOT2 = (360, 360)
-TOP = (320, 60)
+
 
 
 import pygame.draw
@@ -38,15 +31,26 @@ class Simulation:
 	def __init__(self, buffer=None):
 		self.fpsClock = pygame.time.Clock()
 		self.t = 0
-
+		
 		if (buffer == None):
 			self.buffer = DummyBuffer()
 		else:
 			self.buffer = buffer
 		self.parts = []
+		
+		self.FPS = 60
+		self.BEATLENGTH = 40
+		self.RESOLUTION = (640, 480)
+		self.TOP = self.RESOLUTION[1]/8
+		self.BOT = 7*self.RESOLUTION[1]/8
+		self.GRAVITY = 4.0*(self.BOT - self.TOP)/((self.buffer.height*self.BEATLENGTH)**2) # Gravity scaled such that max throws reach the top height
+		self.LEFT = self.RESOLUTION[0]/4
+		self.RIGHT = 3*self.RESOLUTION[0]/4
+		self.LHAND = (self.LEFT, self.BOT)
+		self.RHAND = (self.RIGHT, self.BOT)
 
 		pygame.display.init()
-		self.disp = pygame.display.set_mode(RESOLUTION)
+		self.disp = pygame.display.set_mode(self.RESOLUTION)
         signal.signal(signal.SIGINT, exit_handler)
 
 	def run(self):
@@ -67,33 +71,44 @@ class Simulation:
 		pygame.event.pump()
 
 		# Things that occur once every beat
-		if (self.t % BEATLENGTH == 0):
+		if (self.t % self.BEATLENGTH == 0):
 			next = self.buffer.next_throw()
-			# The following line no longer works. Have to figure out something.
+			# The following line no longer works. Need to figure out something else if random throws have to be debugged.
 			# print self.buffer.throw_generator.state
 
 			# Split particles into the ones in the air and the ones just caught
 			hand = [p for p in self.parts if p.t >= p.maxt]
 			self.parts = [p for p in self.parts if p.t < p.maxt]
 
+			pos = [p for p in hand if p.charge > 0]
+			neg = [p for p in hand if p.charge < 0]
+			
 			for n in next:
 				if (n > 0):
 					# If we have nothing in hand, create a new particle. This is necessary in the beginning, but should no longer occur once the buffer has been established
-					if (len(hand) == 0):
-						self.parts.append(Particle(n*BEATLENGTH, QuadGPath(BOT1, BOT2, GRAVITY, n*BEATLENGTH)))
+					if (len(pos) == 0):
+						self.parts.append(Particle(n*self.BEATLENGTH, QuadGPath(self.LHAND, self.RHAND, self.GRAVITY, n*self.BEATLENGTH), 1))
 					# Otherwise throw an existing particle. A new path is created to accommodate for hand alternation.
 					else:
-						part = hand.pop()
-						path = QuadGPath(part.path.at(1), part.path.at(0), GRAVITY, n*BEATLENGTH)
-						self.parts.append(Particle(n*BEATLENGTH, path))
+						part = pos.pop()
+						path = QuadGPath(part.path.at(1), part.path.at(0), self.GRAVITY, n*self.BEATLENGTH)
+						self.parts.append(Particle(n*self.BEATLENGTH, path, 1))
+				# Repeat for negative particles!
+				if (n < 0):
+					if (len(neg) == 0):
+						self.parts.append(Particle(-n*self.BEATLENGTH, QuadGPath(self.LHAND, self.RHAND, self.GRAVITY, -n*self.BEATLENGTH), -1))
+					else:
+						part = neg.pop()
+						path = QuadGPath(part.path.at(1), part.path.at(0), self.GRAVITY, -n*self.BEATLENGTH)
+						self.parts.append(Particle(-n*self.BEATLENGTH, path, -1))
 
-		# Update the particles we have left
+		# Update the particles
 		for p in self.parts:
 			p.update()
 
 		self.draw()
-		self.t = (self.t + 1) % BEATLENGTH
-		self.fpsClock.tick(FPS)
+		self.t = (self.t + 1) % self.BEATLENGTH
+		self.fpsClock.tick(self.FPS)
 		return True
 
 	def draw(self):
@@ -119,4 +134,7 @@ class Particle:
 
 	def draw(self, surf):
 		"""Draw some graphical representation of the particle in its current position, on the specified surface."""
-		pygame.draw.circle(surf, (255,255,255), map(int, self.path.at(float(self.t)/self.maxt)), 10)
+		if self.charge == 1:
+			pygame.draw.circle(surf, (0, 255, 255), map(int, self.path.at(float(self.t)/self.maxt)), 10)
+		if self.charge == -1:
+			pygame.draw.circle(surf, (255, 0, 255), map(int, self.path.at(float(self.t)/self.maxt)), 10)
