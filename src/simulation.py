@@ -116,6 +116,7 @@ class Simulation:
 		self.disp.fill((0, 0, 0))
 		for p in self.parts:
 			p.draw(self.disp)
+		#self.disp.blit(surf, (0,0))
 		pygame.display.flip()
 
 class Particle:
@@ -134,7 +135,12 @@ class Particle:
 
 	def draw(self, surf):
 		"""Draw some graphical representation of the particle in its current position, on the specified surface."""
+		circ = pygame.Surface((24, 24))
+		circ.fill((0, 0, 0))
 		if self.charge == 1:
-			pygame.draw.circle(surf, (0, 255, 255), map(int, self.path.at(float(self.t)/self.maxt)), 10)
+			pygame.draw.circle(circ, (0, 0, 255), (circ.get_width()/2, circ.get_height()/2), 10)
 		if self.charge == -1:
-			pygame.draw.circle(surf, (255, 0, 255), map(int, self.path.at(float(self.t)/self.maxt)), 10)
+			pygame.draw.circle(circ, (255, 0, 0), (circ.get_width()/2, circ.get_height()/2), 10)
+		coords = self.path.at(float(self.t)/self.maxt)
+		coords = (coords[0] - circ.get_width()/2, coords[1] - circ.get_height()/2)
+		surf.blit(circ, coords, special_flags=pygame.BLEND_ADD)
