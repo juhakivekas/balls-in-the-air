@@ -127,3 +127,26 @@ class RandomPattern:
 			return self.unif_next_throw()
 		else:
 			return self.geom_next_throw()
+
+	def __str__(self):
+		"""prints the current state as a string"""
+		string = ""
+		#add the negative slots as -'s 
+		for i in range(self.min_height,0):
+			if self.state.slot.count(i) != 0:
+				string += "-"
+			else:
+				string += "X"
+		
+		#add the zero-time marker
+		string += "|"
+
+		#add the positive slots as X's
+		for i in range(0,self.max_height):
+			if self.state.slot.count(i) != 0:
+				string += "X"
+			else:
+				string += "-"
+
+		return string
+	

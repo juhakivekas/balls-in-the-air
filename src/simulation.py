@@ -75,7 +75,7 @@ class Simulation:
 		if (self.t % self.BEATLENGTH == 0):
 			next = self.buffer.next_throw()
 			# The following line no longer works. Need to figure out something else if random throws have to be debugged.
-			# print self.buffer.throw_generator.state
+			print self.buffer.throw_generator
 
 			# Split particles into the ones in the air and the ones just caught
 			hand = [p for p in self.parts if p.t >= p.maxt]
