@@ -23,7 +23,9 @@ class Buffer:
 			throw = self.throw_generator.next_throw()
 			if (throw > 0):
 				self.throws[i].append(throw)
-			if (throw < 0):
+			# Negative indices refer to the n:th last entry in a list (e.g. -1 is the last)
+			# When i+throw is negative, it refers to a virtual particle being thrown *BEFORE* the pattern starts properly so those have to be excluded.
+			if (throw < 0 and i+throw >= 0):
 				self.throws[i + throw].append(throw)
 
 	def next_throw(self):
