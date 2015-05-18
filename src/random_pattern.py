@@ -29,8 +29,8 @@ class RandomPattern:
 		self.max_height = max_h
 		#taking just the first letter allows different input values
 		self.distribution_type = dist_type[0]
-		print min_h
-		print max_h
+		# print min_h
+		# print max_h
 		if(max_h-min_h < numballs):
 			raise ValueError('The difference in throw heights has to be larger than the number of balls ');
 
@@ -50,7 +50,8 @@ class RandomPattern:
 		"""returns a random (allowed) throw from uniform distribution and manages the state accordingly"""
 		#we can't let the lowest valued slot move too far to the past.
 		#If we get a free slot in (min_height-1) we can never fill the slot
-		#since it will move further away when timwe progresses.
+		#since it will move further away when time progresses.
+		print self.state
 		if self.state.is_valid_throw(self.min_height):
 			next_throw =  self.min_height
 			self.state.throw(next_throw);
@@ -69,7 +70,7 @@ class RandomPattern:
 
 		#pick an integer that is an index for the valid throws list
 		#XXX this is where the distribution can be made non-uniform!
-		print allowed
+		#print allowed
 		index = random.randint(0,len(allowed)-1)
 		
 		next_throw = allowed[index]

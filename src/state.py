@@ -32,7 +32,7 @@ class State:
 		#add the zero-time marker
 		string += "|"
 
-		#add the positivve slots as X's
+		#add the positive slots as X's
 		for i in range(0,6):
 			if self.slot.count(i) != 0:
 				string += "X"
@@ -43,7 +43,7 @@ class State:
 			
 
 	def is_valid_throw(self, t):
-		"""Checks wether the throw t can be thrown without particle collisions"""
+		"""Checks whether the throw t can be thrown without particle collisions"""
 		#if we don't allow virtual throws, only zeros can be thrown when
 		#the state doesn't contain a particle in the zero slot
 		if not self.virtual and self.slot.count(0) == 0:

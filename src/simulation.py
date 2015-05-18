@@ -12,6 +12,7 @@ import pygame.time
 import pygame.display
 import sys
 import signal
+from math import sin, cos, pi
 
 from path import *
 from buffer import *
@@ -137,10 +138,25 @@ class Particle:
 		"""Draw some graphical representation of the particle in its current position, on the specified surface."""
 		circ = pygame.Surface((24, 24))
 		circ.fill((0, 0, 0))
-		if self.charge == 1:
-			pygame.draw.circle(circ, (0, 0, 255), (circ.get_width()/2, circ.get_height()/2), 10)
-		if self.charge == -1:
-			pygame.draw.circle(circ, (255, 0, 0), (circ.get_width()/2, circ.get_height()/2), 10)
+		
+		rot = self.path.at(float(self.t)/self.maxt)[0]/(2*5*pi)
+		pts = map(lambda x: (circ.get_width()/2 + 10*cos(rot + 2*pi*x/24), circ.get_height()/2 + 10*sin(rot + 2*pi*x/24)), range(0, 24))
+		
+		if (self.charge > 0):
+			col1 = (0, 0, 255)
+			col2 = (0, 0, 160)
+			
+		if (self.charge < 0):
+			col1 = (255, 0, 0)
+			col2 = (160, 0, 0)
+
+		pygame.draw.polygon(circ, col1, [(circ.get_width()/2, circ.get_height()/2)] + pts[0:7])
+		pygame.draw.polygon(circ, col2, [(circ.get_width()/2, circ.get_height()/2)] + pts[6:13])
+		pygame.draw.polygon(circ, col1, [(circ.get_width()/2, circ.get_height()/2)] + pts[12:19])
+		pygame.draw.polygon(circ, col2, [(circ.get_width()/2, circ.get_height()/2)] + pts[18:25] + [pts[0]])
+
+		# pygame.draw.circle(circ, col1, (circ.get_width()/2, circ.get_height()/2), 10)
+		
 		coords = self.path.at(float(self.t)/self.maxt)
 		coords = (coords[0] - circ.get_width()/2, coords[1] - circ.get_height()/2)
 		surf.blit(circ, coords, special_flags=pygame.BLEND_ADD)
