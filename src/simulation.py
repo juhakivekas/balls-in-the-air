@@ -73,38 +73,16 @@ class Simulation:
 		# Things that occur once every beat
 		if (self.t % self.BEATLENGTH == 0):
 			beatparity = (self.t/self.BEATLENGTH) % 2
-			print beatparity
 			next = self.buffer.next_throw()
-			# The following line no longer works. Need to figure out something else if random throws have to be debugged.
-			print self.buffer.throw_generator
-
-			# Split particles into the ones in the air and the ones just caught
-			hand = [p for p in self.parts if p.t >= p.maxt]
+			# Remove the landed particles
 			self.parts = [p for p in self.parts if p.t < p.maxt]
-
-			pos = [p for p in hand if p.charge > 0]
-			neg = [p for p in hand if p.charge < 0]
 			
+			print self.buffer.throw_generator
+			
+			# Iterate through the sequence of given throws. On even beats throw from left hand, on odd beats throw from right one. On even throws throw to the same hand, on odd throws throw to the other one.
 			for n in next:
-				if (n > 0):
-					# If we have nothing in hand, create a new particle. This is necessary in the beginning, but should no longer occur once the buffer has been established
-					#if (len(pos) == 0):
-					self.parts.append(Particle(n*self.BEATLENGTH, QuadGPath(self.HANDS[beatparity % 2], self.HANDS[(n + beatparity) % 2], self.GRAVITY, n*self.BEATLENGTH), 1))
-					# Otherwise throw an existing particle. A new path is created to accommodate for hand alternation.
-					# else:
-						# part = pos.pop()
-						# path = QuadGPath(part.path.at(1), self.HANDS[n + beatparity % 2], self.GRAVITY, n*self.BEATLENGTH)
-						# self.parts.append(Particle(n*self.BEATLENGTH, path, 1))
-				# Repeat for negative particles!
-				if (n < 0):
-					#if (len(pos) == 0):
-					self.parts.append(Particle(-n*self.BEATLENGTH, QuadGPath(self.HANDS[beatparity % 2], self.HANDS[(-n + beatparity) % 2], self.GRAVITY, -n*self.BEATLENGTH), -1))
-					# if (len(neg) == 0):
-						# self.parts.append(Particle(-n*self.BEATLENGTH, QuadGPath(self.LHAND, self.RHAND, self.GRAVITY, -n*self.BEATLENGTH), -1))
-					# else:
-						# part = neg.pop()
-						# path = QuadGPath(part.path.at(1), part.path.at(0), self.GRAVITY, -n*self.BEATLENGTH)
-						# self.parts.append(Particle(-n*self.BEATLENGTH, path, -1))
+				if (n != 0):
+					self.parts.append(Particle(abs(n)*self.BEATLENGTH, QuadGPath(self.HANDS[beatparity % 2], self.HANDS[(n + beatparity) % 2], self.GRAVITY, abs(n)*self.BEATLENGTH), n/abs(n)))
 
 		# Update the particles
 		for p in self.parts:
