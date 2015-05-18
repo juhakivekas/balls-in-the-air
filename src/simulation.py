@@ -47,8 +47,7 @@ class Simulation:
 		self.GRAVITY = 4.0*(self.BOT - self.TOP)/((self.buffer.height*self.BEATLENGTH)**2) # Gravity scaled such that max throws reach the top height
 		self.LEFT = self.RESOLUTION[0]/4
 		self.RIGHT = 3*self.RESOLUTION[0]/4
-		self.LHAND = (self.LEFT, self.BOT)
-		self.RHAND = (self.RIGHT, self.BOT)
+		self.HANDS = ((self.LEFT, self.BOT), (self.RIGHT, self.BOT))
 
 		pygame.display.init()
 		self.disp = pygame.display.set_mode(self.RESOLUTION)
@@ -73,6 +72,8 @@ class Simulation:
 
 		# Things that occur once every beat
 		if (self.t % self.BEATLENGTH == 0):
+			beatparity = (self.t/self.BEATLENGTH) % 2
+			print beatparity
 			next = self.buffer.next_throw()
 			# The following line no longer works. Need to figure out something else if random throws have to be debugged.
 			print self.buffer.throw_generator
@@ -87,28 +88,30 @@ class Simulation:
 			for n in next:
 				if (n > 0):
 					# If we have nothing in hand, create a new particle. This is necessary in the beginning, but should no longer occur once the buffer has been established
-					if (len(pos) == 0):
-						self.parts.append(Particle(n*self.BEATLENGTH, QuadGPath(self.LHAND, self.RHAND, self.GRAVITY, n*self.BEATLENGTH), 1))
+					#if (len(pos) == 0):
+					self.parts.append(Particle(n*self.BEATLENGTH, QuadGPath(self.HANDS[beatparity % 2], self.HANDS[(n + beatparity) % 2], self.GRAVITY, n*self.BEATLENGTH), 1))
 					# Otherwise throw an existing particle. A new path is created to accommodate for hand alternation.
-					else:
-						part = pos.pop()
-						path = QuadGPath(part.path.at(1), part.path.at(0), self.GRAVITY, n*self.BEATLENGTH)
-						self.parts.append(Particle(n*self.BEATLENGTH, path, 1))
+					# else:
+						# part = pos.pop()
+						# path = QuadGPath(part.path.at(1), self.HANDS[n + beatparity % 2], self.GRAVITY, n*self.BEATLENGTH)
+						# self.parts.append(Particle(n*self.BEATLENGTH, path, 1))
 				# Repeat for negative particles!
 				if (n < 0):
-					if (len(neg) == 0):
-						self.parts.append(Particle(-n*self.BEATLENGTH, QuadGPath(self.LHAND, self.RHAND, self.GRAVITY, -n*self.BEATLENGTH), -1))
-					else:
-						part = neg.pop()
-						path = QuadGPath(part.path.at(1), part.path.at(0), self.GRAVITY, -n*self.BEATLENGTH)
-						self.parts.append(Particle(-n*self.BEATLENGTH, path, -1))
+					#if (len(pos) == 0):
+					self.parts.append(Particle(-n*self.BEATLENGTH, QuadGPath(self.HANDS[beatparity % 2], self.HANDS[(-n + beatparity) % 2], self.GRAVITY, -n*self.BEATLENGTH), -1))
+					# if (len(neg) == 0):
+						# self.parts.append(Particle(-n*self.BEATLENGTH, QuadGPath(self.LHAND, self.RHAND, self.GRAVITY, -n*self.BEATLENGTH), -1))
+					# else:
+						# part = neg.pop()
+						# path = QuadGPath(part.path.at(1), part.path.at(0), self.GRAVITY, -n*self.BEATLENGTH)
+						# self.parts.append(Particle(-n*self.BEATLENGTH, path, -1))
 
 		# Update the particles
 		for p in self.parts:
 			p.update()
 
 		self.draw()
-		self.t = (self.t + 1) % self.BEATLENGTH
+		self.t = (self.t + 1) % (2*self.BEATLENGTH)
 		self.fpsClock.tick(self.FPS)
 		return True
 
