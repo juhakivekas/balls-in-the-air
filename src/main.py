@@ -37,8 +37,6 @@ parser.add_argument('--p', action="store", nargs="+", dest="pattern", type=int)
 parser.set_defaults(enable_random=False)
 args = parser.parse_args()
 
-print(args.enable_random)
-
 if args.enable_random:
     dist = "u"
     if args.distribution == "g":
@@ -50,9 +48,14 @@ if args.enable_random:
     random_pattern = RandomPattern(args.num_balls, args.min_throw, args.max_throw, dist_type=dist)
     buffer = Buffer(random_pattern)
     simulation = Simulation(buffer)
+    print("Starting simulation... press ESC to close the window")
     simulation.run()
 else:
-    s = Pattern(args.pattern)
-    buffer = Buffer(s)
-    simulation = Simulation(buffer)
-    simulation.run()
+    if args.pattern != None:
+        s = Pattern(args.pattern)
+        buffer = Buffer(s)
+        simulation = Simulation(buffer)
+        print("Starting simulation... press ESC to close the window")
+        simulation.run()
+    else:
+        print("You must give a pattern with the --p switch")
