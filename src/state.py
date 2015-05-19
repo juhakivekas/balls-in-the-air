@@ -7,7 +7,6 @@ class State:
 
 	def __init__(self, start=[], virtual=False):
 		"""Initialize a virtual siteswap state from a list"""
-		#XXX is timeslot a good word for a "cross" in the state?
 		#positive integers and zero indicate occupied sloting times/slots for particles
 		#negative integers indicate unoccupied sloting times/slots in the past
 		self.slot = list(start)
@@ -44,7 +43,7 @@ class State:
 
 	def is_valid_throw(self, t):
 		"""Checks whether the throw t can be thrown without particle collisions"""
-		#if we don't allow virtual throws, only zeros can be thrown when
+		#if we don't allow virtual throws, ONLY zeros can be thrown when
 		#the state doesn't contain a particle in the zero slot
 		if not self.virtual and self.slot.count(0) == 0:
 			if t==0:
@@ -62,7 +61,9 @@ class State:
 		return True
 
 	def throw(self, t):
-		"""Do a throw of height 't' on the state"""		
+		"""Do a throw of height 't' on the state"""
+		#validity of the throw is not checked, but exceptions are thrown
+		#when erraneous things happen.
 		if t>=0:
 			if self.slot.count(t) != 0:
 				#if there's a ball landing on time 't' already,
@@ -93,5 +94,3 @@ class State:
 		#shorter syntax -> self.slot[:] = [a-1 for a in self.slot]
 		for i in range(0, len(self.slot)):
 			self.slot[i] -= 1
-			
-

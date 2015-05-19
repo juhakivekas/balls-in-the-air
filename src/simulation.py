@@ -80,6 +80,7 @@ class Simulation:
 			print self.buffer.throw_generator
 			
 			# Iterate through the sequence of given throws. On even beats throw from left hand, on odd beats throw from right one. On even throws throw to the same hand, on odd throws throw to the other one.
+			print next
 			for n in next:
 				if (n != 0):
 					self.parts.append(Particle(abs(n)*self.BEATLENGTH, QuadGPath(self.HANDS[beatparity % 2], self.HANDS[(n + beatparity) % 2], self.GRAVITY, abs(n)*self.BEATLENGTH), n/abs(n)))

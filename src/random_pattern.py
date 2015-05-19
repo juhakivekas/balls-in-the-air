@@ -29,8 +29,6 @@ class RandomPattern:
 		self.max_height = max_h
 		#taking just the first letter allows different input values
 		self.distribution_type = dist_type[0]
-		# print min_h
-		# print max_h
 		if(max_h-min_h < numballs):
 			raise ValueError('The difference in throw heights has to be larger than the number of balls ');
 
@@ -51,18 +49,23 @@ class RandomPattern:
 		#we can't let the lowest valued slot move too far to the past.
 		#If we get a free slot in (min_height-1) we can never fill the slot
 		#since it will move further away when time progresses.
-		print self.state
-		if self.state.is_valid_throw(self.min_height):
+		#print self.state
+		if self.min_height<0 and self.state.is_valid_throw(self.min_height):
 			next_throw =  self.min_height
 			self.state.throw(next_throw);
 			return next_throw;
 
 		#the list of allowed throws
 		allowed = []
+		#zeros are valid throws even if they are not in the throw height window
+		if self.min_height > 0:
+			if self.state.is_valid_throw(0):
+				allowed.append(0)
 		#check throws in the chosen range for validity
 		for i in range(self.min_height, self.max_height+1):
 			if self.state.is_valid_throw(i):
 				allowed.append(i)
+
 
 		if not allowed:
 			#if the allowed list is empty, there is a problem.
